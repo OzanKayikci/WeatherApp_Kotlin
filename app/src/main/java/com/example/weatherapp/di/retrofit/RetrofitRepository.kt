@@ -2,6 +2,7 @@ package com.example.weatherapp.di.retrofit
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.example.weatherapp.models.WeatherForecast
 import com.example.weatherapp.models.WeatherInfo
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -26,20 +27,38 @@ class RetrofitRepository @Inject constructor(private val retrofitServiceInstance
         })
     }
 
-    fun getWeatherIcon(icon:String,liveData: MutableLiveData<String>){
-        retrofitServiceInstance.getWeatherIcon(icon).enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+//    fun getWeatherIcon(icon:String,liveData: MutableLiveData<String>){
+//        retrofitServiceInstance.getWeatherIcon(icon).enqueue(object : Callback<ResponseBody> {
+//            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+//
+//                    val imageUrl = response.raw().request().url().toString()
+//                    liveData.postValue(imageUrl)
+//
+//            }
+//
+//            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+//                Log.e("RetrofitError", "Retrofit onFailure on Icon: ${t.message}")
+//                liveData.postValue(null)
+//            }
+//
+//
+//        })
+//    }
 
-                    val imageUrl = response.raw().request().url().toString()
-                    liveData.postValue(imageUrl)
-
+    fun getForecastWeather(location: String,liveData: MutableLiveData<WeatherForecast>){
+        retrofitServiceInstance.getFiveDayWeather(location).enqueue(object :Callback<WeatherForecast>{
+            override fun onResponse(
+                call: Call<WeatherForecast>,
+                response: Response<WeatherForecast>
+            ) {
+               liveData.postValue(response.body())
             }
 
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                Log.e("RetrofitError", "Retrofit onFailure on Icon: ${t.message}")
+            override fun onFailure(call: Call<WeatherForecast>, t: Throwable) {
+                Log.e("RetrofitError", "Forecast Retrofit onFailure : ${t.message}")
+
                 liveData.postValue(null)
             }
-
 
         })
     }

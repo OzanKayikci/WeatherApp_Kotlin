@@ -1,6 +1,9 @@
 package com.example.weatherapp.models
 
-data class WeatherMain(
+data class ForecastMain(
+    val sea_level:Int,
+    val grnd_level:Int,
+    val temp_kf:Double,
     override val temp: Double,
     override val feels_like: Double,
     override val temp_min: Double,

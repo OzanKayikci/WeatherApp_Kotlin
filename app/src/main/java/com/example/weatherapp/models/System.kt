@@ -1,9 +1,9 @@
 package com.example.weatherapp.models
 
-data class System(
+data class System  (
     val type: Int,
     val id: Int,
-    val country: String,
-    val sunrise:Long,
-    val sunset:Long
-    )
+    override val country: String,
+    override val sunset: Long,
+    override val sunrise: Long
+    ):ISunInfo
