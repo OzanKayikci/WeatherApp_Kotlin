@@ -3,9 +3,12 @@ package com.example.weatherapp.viewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.weatherapp.di.retrofit.RetrofitRepository
+import com.example.weatherapp.models.ForecastListItem
 import com.example.weatherapp.models.WeatherForecast
 import com.example.weatherapp.models.WeatherInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
+import org.json.JSONArray
+import org.json.JSONObject
 import javax.inject.Inject
 
 @HiltViewModel
@@ -15,6 +18,7 @@ class HomePageViewModel @Inject constructor(private val repository: RetrofitRepo
     var weatherIcon : MutableLiveData<String>
 
     var weatherForecast: MutableLiveData<WeatherForecast>
+
 
     init {
         currentWeatherInfo = MutableLiveData()
@@ -44,4 +48,6 @@ class HomePageViewModel @Inject constructor(private val repository: RetrofitRepo
     fun loadForecastWeather(location: String){
         repository.getForecastWeather(location,weatherForecast)
     }
+
+
 }

@@ -11,6 +11,10 @@ import com.example.weatherapp.models.ForecastListItem
 import com.example.weatherapp.models.WeatherForecast
 import com.example.weatherapp.models.WeatherInfo
 import com.squareup.picasso.Picasso
+import org.w3c.dom.Text
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class DailyWeatherAdapter : RecyclerView.Adapter<DailyWeatherAdapter.MyCustomHolder>() {
 
@@ -26,9 +30,16 @@ class DailyWeatherAdapter : RecyclerView.Adapter<DailyWeatherAdapter.MyCustomHol
 
         private val tempText = view.findViewById<TextView>(R.id.cartTempText)
         private val weatherIcon = view.findViewById<ImageView>(R.id.cardWeatherIcon)
+        private val date = view.findViewById<TextView>(R.id.cardDate)
+        private val time = view.findViewById<TextView>(R.id.cardTime)
 
+
+        private val dateFormat = SimpleDateFormat("dd-MM", Locale.getDefault())
+        private val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
         fun bind(data: ForecastListItem) {
             tempText.text = data.main.temp.toString()
+            date.text = dateFormat.format(Date(data.dt * 1000))
+            time.text = timeFormat.format(Date(data.dt * 1000))
             Picasso.get().load("https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png")
                 .into(weatherIcon)
 
@@ -54,7 +65,7 @@ class DailyWeatherAdapter : RecyclerView.Adapter<DailyWeatherAdapter.MyCustomHol
             0
         } else {
 
-            liveData!!.size
+          5
 
         }
     }

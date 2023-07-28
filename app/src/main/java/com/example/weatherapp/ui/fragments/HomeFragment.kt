@@ -1,6 +1,8 @@
 package com.example.weatherapp.ui.fragments
 
+import android.icu.text.SimpleDateFormat
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
@@ -9,9 +11,13 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weatherapp.R
 import com.example.weatherapp.adapter.DailyWeatherAdapter
@@ -25,6 +31,9 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import java.io.Serializable
+import java.util.Date
+import java.util.Locale
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -33,9 +42,10 @@ class HomeFragment : Fragment() {
 
     private lateinit var dailyWeatherAdapter: DailyWeatherAdapter
 
-    private val viewModal by lazy {
+    private val viewModel by lazy {
         ViewModelProvider(this, defaultViewModelProviderFactory)[HomePageViewModel::class.java]
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,7 +59,7 @@ class HomeFragment : Fragment() {
 
         searchOperations()
         searchButtonHandle()
-
+        seeDetailButtonHandle()
 
         return binding.root
     }
@@ -62,10 +72,10 @@ class HomeFragment : Fragment() {
     private fun fetchWeatherInfo(city: String = "aydin") {
         CoroutineScope(Dispatchers.IO).launch {
             val job1: Deferred<Unit> = async {
-                viewModal.loadWeatherInfo(city)
+                viewModel.loadWeatherInfo(city)
             }
             val job2: Deferred<Unit> = async {
-                viewModal.loadForecastWeather(city)
+                viewModel.loadForecastWeather(city)
             }
             job1.await()
             job2.await()
@@ -73,16 +83,17 @@ class HomeFragment : Fragment() {
     }
 
     private fun observableFunctions() {
-        viewModal.getObserverWeatherInfo().observe(viewLifecycleOwner) { t ->
+        viewModel.getObserverWeatherInfo().observe(viewLifecycleOwner) { t ->
 
             if (t != null) {
 
                 setResultsToView(t)
             }
         }
-        viewModal.getObserverForecastWeather().observe(viewLifecycleOwner) { t ->
+        viewModel.getObserverForecastWeather().observe(viewLifecycleOwner) { t ->
 
             if (t != null) {
+
                 dailyWeatherAdapter.setList(t.list)
             }
 
@@ -105,7 +116,7 @@ class HomeFragment : Fragment() {
         binding.pressureText.text = ((weatherInfo.main.pressure / 1000).toDouble()).toString()
         binding.visibilityText.text = "${((weatherInfo.visibility / 1000).toDouble())} km"
         binding.feelsText.text = "${weatherInfo.main.feels_like}°"
-
+        binding.date.text = "${convertTimestampToCustomFormat(weatherInfo.dt * 1000)}"
         val weatherIcon = binding.weatherIcon
         Picasso.get()
             .load("https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@4x.png")
@@ -160,5 +171,31 @@ class HomeFragment : Fragment() {
             false
         }
 
+    }
+
+    private fun seeDetailButtonHandle() {
+        binding.seeAllBtn.setOnClickListener {
+
+            val bundle = bundleOf("city" to binding.city.text)
+            findNavController().navigate(R.id.action_homeFragment_to_dailyFragment, bundle)
+        }
+    }
+
+
+    private fun convertTimestampToCustomFormat(timestamp: Long): String {
+        try {
+            // Timestamp'i Date nesnesine çevirin
+            val date = Date(timestamp)
+
+            // Tarih formatı için SimpleDateFormat nesnesi oluşturun
+            val sdf = SimpleDateFormat("EEE MMM d", Locale.getDefault())
+
+            // Tarih formatını uygulayın ve sonucu döndürün
+            return sdf.format(date)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return "" // Hata durumunda boş bir dize döndürün
     }
 }

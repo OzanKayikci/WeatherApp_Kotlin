@@ -366,7 +366,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="180dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -389,7 +389,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:gravity="center"
-                    android:text="Next 5 days"
+                    android:text="5 Day Weather"
                     android:textAlignment="center"
                     android:textSize="20sp"
                     android:textStyle="bold" />

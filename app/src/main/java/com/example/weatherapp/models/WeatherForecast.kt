@@ -1,5 +1,7 @@
 package com.example.weatherapp.models
 
+
+
 data class WeatherForecast(
 val code:String,
 val message:String,

@@ -7,5 +7,14 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.weatherapp.ui.fragments.HomeFragment"
-        android:label="HomeFragment" />
+        android:label="HomeFragment" >
+        <action
+            android:id="@+id/action_homeFragment_to_dailyFragment"
+            app:destination="@id/dailyFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/dailyFragment"
+        android:name="com.example.weatherapp.ui.fragments.DailyFragment"
+        android:label="DailyFragment"
+        />
 </navigation>
